@@ -12,7 +12,10 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
-  String inputdata = "";
+  String inputdata = "0";
+  double previousValue = 0;
+  String operator = "";
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -69,7 +72,43 @@ class _MainAppState extends State<MainApp> {
     return InkWell(
       onTap: () {
         setState(() {
-          inputdata += text; 
+          if (text == "+" || text == "-" || text == "*" || text == "/") {
+           
+            previousValue = double.parse(inputdata);
+            operator = text;
+            inputdata = "0"; 
+          } else if (text == "=") {
+            double currentValue = double.parse(inputdata);
+            switch (operator) {
+              case "+":
+                inputdata = (previousValue + currentValue).toString();
+                break;
+              case "-":
+                inputdata = (previousValue - currentValue).toString();
+                break;
+              case "*":
+                inputdata = (previousValue * currentValue).toString();
+                break;
+              case "/":
+                if (currentValue != 0) {
+                  inputdata = (previousValue / currentValue).toString();
+                } else {
+                  inputdata = "Error";
+                }
+                break;
+              default:
+                inputdata = currentValue.toString();
+            }
+          } else {
+            
+            if (inputdata == "0" && text != ".") {
+              inputdata = text; 
+            } else if (text == "." && !inputdata.contains(".")) {
+              inputdata += text;
+            } else {
+              inputdata += text; 
+            }
+          }
         });
       },
       child: Container(
