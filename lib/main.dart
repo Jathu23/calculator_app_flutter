@@ -25,50 +25,22 @@ class _MainAppState extends State<MainApp> {
           children: [
             Container(
               alignment: Alignment.topLeft,
+              padding: const EdgeInsets.all(20),
               child: Text(
                 inputdata.toString(),
-                style: TextStyle(color: Colors.white, fontSize: 100),
+                style: const TextStyle(color: Colors.white, fontSize: 60),
               ),
             ),
-            Row(
-              children: [
-                calbutton("C", Colors.red),
-                calbutton("±", Colors.grey),
-                calbutton("%", Colors.grey),
-                calbutton("⌫", Colors.grey),
-              ],
-            ),
-            Row(
-              children: [
-                calbutton("7", Colors.grey),
-                calbutton("8", Colors.grey),
-                calbutton("9", Colors.grey),
-                calbutton("/", Colors.orange),
-              ],
-            ),
-            Row(
-              children: [
-                calbutton("4", Colors.grey),
-                calbutton("5", Colors.grey),
-                calbutton("6", Colors.grey),
-                calbutton("*", Colors.orange),
-              ],
-            ),
-            Row(
-              children: [
-                calbutton("1", Colors.grey),
-                calbutton("2", Colors.grey),
-                calbutton("3", Colors.grey),
-                calbutton("-", Colors.orange),
-              ],
-            ),
-            Row(
-              children: [
-                calbutton("0", Colors.grey),
-                calbutton(".", Colors.grey),
-                calbutton("=", Colors.orange),
-                calbutton("+", Colors.orange),
-              ],
+            Expanded(
+              child: Column(
+                children: [
+                  buildButtonRow(["C", "±", "%", "⌫"], [Colors.red, Colors.grey, Colors.grey, Colors.grey]),
+                  buildButtonRow(["7", "8", "9", "/"], [Colors.grey, Colors.grey, Colors.grey, Colors.orange]),
+                  buildButtonRow(["4", "5", "6", "*"], [Colors.grey, Colors.grey, Colors.grey, Colors.orange]),
+                  buildButtonRow(["1", "2", "3", "-"], [Colors.grey, Colors.grey, Colors.grey, Colors.orange]),
+                  buildButtonRow(["0", ".", "=", "+"], [Colors.grey, Colors.grey, Colors.orange, Colors.orange]),
+                ],
+              ),
             ),
           ],
         ),
@@ -76,71 +48,85 @@ class _MainAppState extends State<MainApp> {
     );
   }
 
-  Widget calbutton(String text, Color bgcolor) {
-    return InkWell(
-      onTap: () {
-        setState(() {
-          if (text == "C") {
-            inputdata = "0";
-            previousValue = 0;
-            operator = "";
-          } else if (text == "⌫") {
-            inputdata = inputdata.length > 1
-                ? inputdata.substring(0, inputdata.length - 1)
-                : "0";
-          } else if (text == "±") {
-            inputdata = (double.parse(inputdata) * -1).toString();
-          } else if (text == "%") {
-            inputdata = (double.parse(inputdata) / 100).toString();
-          } else if (text == "+" || text == "-" || text == "*" || text == "/") {
-            previousValue = double.parse(inputdata);
-            operator = text;
-            inputdata = "0";
-          } else if (text == "=") {
-            double currentValue = double.parse(inputdata);
-            switch (operator) {
-              case "+":
-                inputdata = (previousValue + currentValue).toString();
-                break;
-              case "-":
-                inputdata = (previousValue - currentValue).toString();
-                break;
-              case "*":
-                inputdata = (previousValue * currentValue).toString();
-                break;
-              case "/":
-                if (currentValue != 0) {
-                  inputdata = (previousValue / currentValue).toString();
-                } else {
-                  inputdata = "Error";
+  Widget buildButtonRow(List<String> texts, List<Color> colors) {
+    return Expanded(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: List.generate(texts.length, (index) {
+          return buildButton(texts[index], colors[index]);
+        }),
+      ),
+    );
+  }
+
+  Widget buildButton(String text, Color bgcolor) {
+    return Expanded(
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: InkWell(
+          onTap: () {
+            setState(() {
+              if (text == "C") {
+                inputdata = "0";
+                previousValue = 0;
+                operator = "";
+              } else if (text == "⌫") {
+                inputdata = inputdata.length > 1
+                    ? inputdata.substring(0, inputdata.length - 1)
+                    : "0";
+              } else if (text == "±") {
+                inputdata = (double.parse(inputdata) * -1).toString();
+              } else if (text == "%") {
+                inputdata = (double.parse(inputdata) / 100).toString();
+              } else if (text == "+" || text == "-" || text == "*" || text == "/") {
+                previousValue = double.parse(inputdata);
+                operator = text;
+                inputdata = "0";
+              } else if (text == "=") {
+                double currentValue = double.parse(inputdata);
+                switch (operator) {
+                  case "+":
+                    inputdata = (previousValue + currentValue).toString();
+                    break;
+                  case "-":
+                    inputdata = (previousValue - currentValue).toString();
+                    break;
+                  case "*":
+                    inputdata = (previousValue * currentValue).toString();
+                    break;
+                  case "/":
+                    if (currentValue != 0) {
+                      inputdata = (previousValue / currentValue).toString();
+                    } else {
+                      inputdata = "Error";
+                    }
+                    break;
+                  default:
+                    inputdata = currentValue.toString();
                 }
-                break;
-              default:
-                inputdata = currentValue.toString();
-            }
-          } else {
-            if (inputdata == "0" && text != ".") {
-              inputdata = text;
-            } else if (text == "." && !inputdata.contains(".")) {
-              inputdata += text;
-            } else {
-              inputdata += text;
-            }
-          }
-        });
-      },
-      child: Container(
-        margin: const EdgeInsets.all(5),
-        decoration: BoxDecoration(
-          color: bgcolor,
-          borderRadius: BorderRadius.circular(100),
-        ),
-        height: 80,
-        width: 80,
-        alignment: Alignment.center,
-        child: Text(
-          text,
-          style: const TextStyle(color: Colors.white, fontSize: 24),
+              } else {
+                if (inputdata == "0" && text != ".") {
+                  inputdata = text;
+                } else if (text == "." && !inputdata.contains(".")) {
+                  inputdata += text;
+                } else {
+                  inputdata += text;
+                }
+              }
+            });
+          },
+          child: Container(
+            margin: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+              color: bgcolor,
+              borderRadius: BorderRadius.circular(100),
+            ),
+            alignment: Alignment.center,
+            child: Text(
+              text,
+              style: const TextStyle(color: Colors.white, fontSize: 24),
+            ),
+          ),
         ),
       ),
     );
