@@ -32,6 +32,14 @@ class _MainAppState extends State<MainApp> {
             ),
             Row(
               children: [
+                calbutton("C", Colors.red),
+                calbutton("±", Colors.grey),
+                calbutton("%", Colors.grey),
+                calbutton("⌫", Colors.grey),
+              ],
+            ),
+            Row(
+              children: [
                 calbutton("7", Colors.grey),
                 calbutton("8", Colors.grey),
                 calbutton("9", Colors.grey),
@@ -61,7 +69,7 @@ class _MainAppState extends State<MainApp> {
                 calbutton("=", Colors.orange),
                 calbutton("+", Colors.orange),
               ],
-            )
+            ),
           ],
         ),
       ),
@@ -72,11 +80,22 @@ class _MainAppState extends State<MainApp> {
     return InkWell(
       onTap: () {
         setState(() {
-          if (text == "+" || text == "-" || text == "*" || text == "/") {
-           
+          if (text == "C") {
+            inputdata = "0";
+            previousValue = 0;
+            operator = "";
+          } else if (text == "⌫") {
+            inputdata = inputdata.length > 1
+                ? inputdata.substring(0, inputdata.length - 1)
+                : "0";
+          } else if (text == "±") {
+            inputdata = (double.parse(inputdata) * -1).toString();
+          } else if (text == "%") {
+            inputdata = (double.parse(inputdata) / 100).toString();
+          } else if (text == "+" || text == "-" || text == "*" || text == "/") {
             previousValue = double.parse(inputdata);
             operator = text;
-            inputdata = "0"; 
+            inputdata = "0";
           } else if (text == "=") {
             double currentValue = double.parse(inputdata);
             switch (operator) {
@@ -100,13 +119,12 @@ class _MainAppState extends State<MainApp> {
                 inputdata = currentValue.toString();
             }
           } else {
-            
             if (inputdata == "0" && text != ".") {
-              inputdata = text; 
+              inputdata = text;
             } else if (text == "." && !inputdata.contains(".")) {
               inputdata += text;
             } else {
-              inputdata += text; 
+              inputdata += text;
             }
           }
         });
