@@ -13,6 +13,7 @@ class MainApp extends StatefulWidget {
 
 class _MainAppState extends State<MainApp> {
   String inputdata = "0";
+  String displayData = "0";
   double previousValue = 0;
   String operator = "";
 
@@ -24,10 +25,10 @@ class _MainAppState extends State<MainApp> {
         body: Column(
           children: [
             Container(
-              alignment: Alignment.topLeft,
+              alignment: Alignment.topRight,
               padding: const EdgeInsets.all(20),
               child: Text(
-                inputdata.toString(),
+                displayData,
                 style: const TextStyle(color: Colors.white, fontSize: 60),
               ),
             ),
@@ -68,20 +69,25 @@ class _MainAppState extends State<MainApp> {
             setState(() {
               if (text == "C") {
                 inputdata = "0";
+                displayData = "0";
                 previousValue = 0;
                 operator = "";
               } else if (text == "⌫") {
                 inputdata = inputdata.length > 1
                     ? inputdata.substring(0, inputdata.length - 1)
                     : "0";
+                displayData = inputdata;
               } else if (text == "±") {
                 inputdata = (double.parse(inputdata) * -1).toString();
+                displayData = inputdata;
               } else if (text == "%") {
                 inputdata = (double.parse(inputdata) / 100).toString();
+                displayData = inputdata;
               } else if (text == "+" || text == "-" || text == "*" || text == "/") {
                 previousValue = double.parse(inputdata);
                 operator = text;
                 inputdata = "0";
+                displayData = previousValue.toString() + operator;
               } else if (text == "=") {
                 double currentValue = double.parse(inputdata);
                 switch (operator) {
@@ -104,6 +110,8 @@ class _MainAppState extends State<MainApp> {
                   default:
                     inputdata = currentValue.toString();
                 }
+                displayData = inputdata;
+                operator = "";
               } else {
                 if (inputdata == "0" && text != ".") {
                   inputdata = text;
@@ -112,6 +120,7 @@ class _MainAppState extends State<MainApp> {
                 } else {
                   inputdata += text;
                 }
+                displayData = previousValue.toString() + operator + inputdata;
               }
             });
           },
