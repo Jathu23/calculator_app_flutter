@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 void main() {
   runApp(const MainApp());
@@ -36,6 +37,7 @@ class _MainAppState extends State<MainApp> {
               child: Column(
                 children: [
                   buildButtonRow(["C", "±", "%", "⌫"], [Colors.red, Colors.grey, Colors.grey, Colors.grey]),
+                  buildButtonRow(["√", "x²", "x³", "1/x"], [Colors.grey, Colors.grey, Colors.grey, Colors.orange]),
                   buildButtonRow(["7", "8", "9", "/"], [Colors.grey, Colors.grey, Colors.grey, Colors.orange]),
                   buildButtonRow(["4", "5", "6", "*"], [Colors.grey, Colors.grey, Colors.grey, Colors.orange]),
                   buildButtonRow(["1", "2", "3", "-"], [Colors.grey, Colors.grey, Colors.grey, Colors.orange]),
@@ -82,6 +84,18 @@ class _MainAppState extends State<MainApp> {
                 displayData = inputdata;
               } else if (text == "%") {
                 inputdata = (double.parse(inputdata) / 100).toString();
+                displayData = inputdata;
+              } else if (text == "√") {
+                inputdata = sqrt(double.parse(inputdata)).toString();
+                displayData = inputdata;
+              } else if (text == "x²") {
+                inputdata = (pow(double.parse(inputdata), 2)).toString();
+                displayData = inputdata;
+              } else if (text == "x³") {
+                inputdata = (pow(double.parse(inputdata), 3)).toString();
+                displayData = inputdata;
+              } else if (text == "1/x") {
+                inputdata = (1 / double.parse(inputdata)).toString();
                 displayData = inputdata;
               } else if (text == "+" || text == "-" || text == "*" || text == "/") {
                 previousValue = double.parse(inputdata);
